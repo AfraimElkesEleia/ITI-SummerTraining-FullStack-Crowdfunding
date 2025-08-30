@@ -1,5 +1,6 @@
 .env
-__pycache__/
+crowdfunding/__pycache__/
 *.py[cod]
 *.pyo
 *.pyd
+media/
