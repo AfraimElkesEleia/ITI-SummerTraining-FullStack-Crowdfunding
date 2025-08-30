@@ -5,4 +5,5 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('',views.register_view,name='register'),
     path('login/',views.login_view,name='login'),
+    path('activate/<uidb64>/<token>', views.activate, name='activate')
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
