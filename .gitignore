@@ -1,5 +1,7 @@
 .env
 crowdfunding/__pycache__/
+authentication/__pycache__/
+project/__pycache__/
 *.py[cod]
 *.pyo
 *.pyd
