@@ -17,7 +17,7 @@ def login_view(request):
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
-            if user.is_active:  # ✅ check if verified
+            if user.is_active:  
                 login(request, user)
                 messages.success(request, "You are now logged in!")
                 return redirect("home")
@@ -73,7 +73,7 @@ def activateEmail(request, user, to_email):
     })
     email = EmailMessage(mail_subject, message, to=[to_email])
     if email.send():
-        messages.success(request, f'Dear {user}, please go to you email {to_email} inbox and click on \
+        messages.success(request, f'Dear {user.first_name} {user.last_name}, please go to you email {to_email} inbox and click on \
                 received activation link to confirm and complete the registration. Note: Check your spam folder.')
     else:
         messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.')
