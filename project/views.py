@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth import logout
-from .forms import UserProfileForm, ProfileExtraForm
+from django.contrib.auth import logout,authenticate
+from .forms import UserProfileForm, ProfileExtraForm,DeleteAccountForm
 from .models import Profile,CustomUser
+from django.contrib import messages
 # Create your views here.
 def home(request):
     return render(request , "project/pages/home.html")
@@ -31,3 +32,21 @@ def edit_profile(request,id):
         "user_form": user_form,
         "profile_form": profile_form
     })
+
+def delete_account(request, id):
+    if request.method == "POST":
+        form = DeleteAccountForm(request.POST)
+        user = CustomUser.objects.get(id=id)
+        if form.is_valid():
+            password = form.cleaned_data.get("password")
+            user = authenticate(email= user.email, password= password)
+            if user is not None:
+                request.user.delete()
+                logout(request)
+                return redirect("authentication:login")
+            else:
+                messages.error(request, "Incorrect password. Please try again.")
+    else:
+        form = DeleteAccountForm()
+
+    return render(request, "project/pages/delete_account.html", {"form": form})
