@@ -1,11 +1,20 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import logout,authenticate
-from .forms import UserProfileForm, ProfileExtraForm,DeleteAccountForm
-from .models import Profile,CustomUser
+from .forms import UserProfileForm, ProfileExtraForm,DeleteAccountForm,ProjectForm
+from .models import Profile,CustomUser,Project
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 def home(request):
-    return render(request , "project/pages/home.html")
+    latest_projects = Project.objects.all().order_by('-created_at')[:5]
+    all_projects = Project.objects.all()
+    top_rated = sorted(all_projects, key=lambda p: p.average_rating(), reverse=True)[:5]
+    context = {
+        'top_rated': top_rated,
+        'latest_projects': latest_projects,
+        'all_projects': all_projects,
+    }
+    return render(request, 'project/pages/home.html', context)
 
 def logout_view(request):
     logout(request)  
@@ -51,3 +60,21 @@ def delete_account(request, id):
         form = DeleteAccountForm()
 
     return render(request, "project/pages/delete_account.html", {"form": form})
+
+@login_required
+def create_project(request):
+    if request.method == "POST":
+        form = ProjectForm(request.POST, request.FILES)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.owner = request.user
+            project.tags = ','.join(form.cleaned_data['tags'])
+            project.save()
+            messages.success(request, "Project created successfully!")
+            return redirect("home")  
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = ProjectForm()
+
+    return render(request, "project/pages/create_project.html", {"form": form})

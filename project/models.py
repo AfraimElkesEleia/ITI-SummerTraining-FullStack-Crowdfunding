@@ -24,15 +24,27 @@ CATEGORY_CHOICES = [
     ('Sports & Athletics', 'Sports & Athletics'),
     ('Health & Wellness', 'Health & Wellness'),
 ]
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
+TAG_CHOICES = [
+    ('Tech', 'Tech'),
+    ('Health', 'Health'),
+    ('Education', 'Education'),
+    ('Art', 'Art'),
+    ('Food', 'Food'),
+    ('Business', 'Business'),
+    ('Travel', 'Travel'),
+    ('Fashion', 'Fashion'),
+    ('Sports', 'Sports'),
+    ('Social', 'Social'),
+    ('AI', 'AI'),
+    ('Flutter', 'Flutter'),
+    ('Computer Vision', 'Computer Vision'),
+]
 class Project(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='projects')
     title = models.CharField(max_length=255)
     description = models.TextField()
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
-    tags = models.ManyToManyField(Tag, blank=True, related_name='projects')
+    tags = models.CharField(max_length=255, blank=True)
     image = models.ImageField(upload_to='projects/', null=True, blank=True)
     total_target = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])
     is_reported = models.BooleanField(default=False)
@@ -55,7 +67,7 @@ class Project(models.Model):
         ratings = self.ratings.all()
         if ratings.exists():
             return sum(r.value for r in ratings) / ratings.count()
-        return None
+        return 0.0
     
 class Rating(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

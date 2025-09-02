@@ -1,0 +1,73 @@
+{% extends "project/base.html" %}
+
+{% block title %}Create Project{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-8">
+    <div class="card shadow-sm border-0 rounded-3">
+      <div class="card-header bg-primary text-white text-center">
+        <h4 class="mb-0">Create New Project</h4>
+      </div>
+      <div class="card-body p-4">
+
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <!-- Loop through all fields except tags -->
+          {% for field in form %}
+            {% if field.name != 'tags' %}
+              <div class="mb-3">
+                {{ field.label_tag }}
+                {{ field}}
+                {% if field.help_text %}
+                  <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endfor %}
+
+          <!-- Tags rendered as clickable chips -->
+          <div class="mb-3">
+            <label class="form-label">Tags</label>
+            <div class="d-flex flex-wrap gap-2">
+              {% for checkbox in form.tags %}
+                <div class="form-check">
+                  {{ checkbox.tag }}
+                  <label class="btn btn-outline-primary btn-sm">{{ checkbox.choice_label }}</label>
+                </div>
+              {% endfor %}
+            </div>
+            {% if form.tags.help_text %}
+              <small class="form-text text-muted">{{ form.tags.help_text }}</small>
+            {% endif %}
+            {% for error in form.tags.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">Create Project</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.form-check-input:checked + label {
+  background-color: #0d6efd;
+  color: white;
+  border-color: #0d6efd;
+}
+.form-check-label {
+  cursor: pointer;
+  user-select: none;
+}
+</style>
+{% endblock %}
