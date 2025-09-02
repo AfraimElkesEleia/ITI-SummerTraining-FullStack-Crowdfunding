@@ -43,6 +43,7 @@ def delete_account(request, id):
             if user is not None:
                 request.user.delete()
                 logout(request)
+                messages.success(request, "Your account has been deleted successfully.")
                 return redirect("authentication:login")
             else:
                 messages.error(request, "Incorrect password. Please try again.")
