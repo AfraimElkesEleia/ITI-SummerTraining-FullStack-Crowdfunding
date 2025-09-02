@@ -11,6 +11,8 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ['first_name', 'last_name', 'email', 'mobile', 'profile_picture']
+    def clean_email(self):
+        return self.instance.email
 
 class ProfileExtraForm(forms.ModelForm):
     birthdate = forms.DateField(

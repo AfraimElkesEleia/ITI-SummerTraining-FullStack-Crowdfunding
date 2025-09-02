@@ -20,7 +20,6 @@ def login_view(request):
         if user is not None:
             if user.is_active:  
                 login(request, user)
-                messages.success(request, "You are now logged in!")
                 return redirect("home")
             else:
                 messages.warning(request, "Your account is not activated. Please check your email.")
