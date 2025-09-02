@@ -9,6 +9,7 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string  
 from django.contrib.sites.shortcuts import get_current_site
 from .models import CustomUser
+from project.models import Profile
 from .tokens import account_activation_token
 def login_view(request):
     if request.method == "POST":
@@ -23,7 +24,7 @@ def login_view(request):
                 return redirect("home")
             else:
                 messages.warning(request, "Your account is not activated. Please check your email.")
-                return redirect('login')
+                return redirect('authentication:login')
         else:
             messages.error(request, "Invalid email or password.")
     return render(request, "pages/login.html")
@@ -36,13 +37,12 @@ def register_view(request):
                 user.is_active=False
                 user.save()
                 activateEmail(request, user, form.cleaned_data.get('email'))
-                return redirect('login')
+                return redirect('authentication:login')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
         form = CustomUserCreationForm()
-    
-    return render(request, 'pages/register.html', {'form': form})
+        return render(request, 'pages/register.html', {'form': form})
 
 def activate(request, uidb64, token):
     try:
@@ -54,13 +54,13 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-
+        profile = Profile.objects.create(user=user)
+        profile.save()
         messages.success(request, "Thank you for your email confirmation. Now you can login your account.")
-        return redirect('login')
+        return redirect('authentication:login')
     else:
         messages.error(request, "Activation link is invalid!")
-
-    return redirect('login')
+        return redirect('authentication:login')   
 
 def activateEmail(request, user, to_email):
     mail_subject = "Activate user account."
