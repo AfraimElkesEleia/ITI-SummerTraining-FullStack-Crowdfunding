@@ -35,3 +35,10 @@ class ProfileExtraForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['birthdate', 'facebook_profile', 'linkedin', 'country']
+
+class DeleteAccountForm(forms.Form):
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Confirm your password",
+        required=True
+    )
