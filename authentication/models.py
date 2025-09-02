@@ -3,6 +3,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 
 class CustomUser(AbstractUser):
+    username = models.CharField(max_length=150, unique=False, blank=True, null=True)
     email_regex = RegexValidator(
     regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     message="Enter a valid email address.")

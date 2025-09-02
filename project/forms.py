@@ -1,5 +1,5 @@
 from django import forms
-from .models import CustomUser, Profile
+from .models import CustomUser, Profile,Project,TAG_CHOICES
 
 class UserProfileForm(forms.ModelForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -42,3 +42,34 @@ class DeleteAccountForm(forms.Form):
         label="Confirm your password",
         required=True
     )
+
+class ProjectForm(forms.ModelForm):
+     tags = forms.MultipleChoiceField(
+        choices=TAG_CHOICES,
+        widget=forms.CheckboxSelectMultiple(),  # will render checkboxes
+        required=False
+    )
+     class Meta:
+        model = Project
+        fields = [
+            'title',
+            'description',
+            'category',
+            'tags',
+            'image',
+            'total_target',
+            'start_time',
+            'end_time'
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Project Title'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe your project'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'total_target': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Total target in EGP'}),
+            'start_time': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'end_time': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+        help_texts = {
+            'tags': 'Select multiple tags by holding Ctrl (Windows) or Cmd (Mac).'
+        }   
