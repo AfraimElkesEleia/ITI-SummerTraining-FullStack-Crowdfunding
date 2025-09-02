@@ -41,7 +41,7 @@ def register_view(request):
             messages.error(request, 'Please correct the errors below.')
     else:
         form = CustomUserCreationForm()
-        return render(request, 'pages/register.html', {'form': form})
+    return render(request, 'pages/register.html', {'form': form})
 
 def activate(request, uidb64, token):
     try:
