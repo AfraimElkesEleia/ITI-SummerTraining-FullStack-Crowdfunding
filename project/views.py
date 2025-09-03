@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.db.models import Avg,Sum,Count
 from django.views.decorators.csrf import csrf_exempt
 from decimal import Decimal
+from django.db.models import Q
 # Create your views here.
 TAG_CHOICES = [
     "Tech",
@@ -289,9 +290,19 @@ def category_projects(request, category):
     return render(request, 'project/pages/category_projects.html', context)
 
 def all_projects(request):
+    search_query = request.GET.get("search", "")  
     all_projects = Project.objects.all()
-    return render(request,'project/pages/all_projects.html',{'projects':all_projects})
 
+    if search_query:
+        all_projects = all_projects.filter(
+            Q(title__icontains=search_query) | 
+            Q(tags__icontains=search_query)    
+        ).distinct()
+
+    return render(request, 'project/pages/all_projects.html', {
+        'projects': all_projects,
+        'search_query': search_query
+    })
 @login_required
 def my_donations(request,user_id):
     current_user = CustomUser.objects.get(id=user_id)

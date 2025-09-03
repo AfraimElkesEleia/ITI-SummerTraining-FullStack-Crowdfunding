@@ -1,6 +1,39 @@
 {% extends 'project/base.html' %}
 {% load static %}
 {% block content %}
+<!-- Search Bar Section -->
+<div class="row mb-4">
+    <div class="col-md-8 mx-auto">
+        <form method="GET" action="{% url 'all_projects' %}" class="d-flex">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" 
+                       placeholder="Search projects by title or tags" 
+                       value="{{ search_query|default:'' }}">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                {% if search_query %}
+                <a href="?search=" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i> Clear
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Search Results Info -->
+{% if search_query %}
+<div class="alert alert-info mb-4">
+    <i class="fas fa-info-circle me-2"></i>
+    Showing results for: <strong>"{{ search_query }}"</strong>
+    {% if projects.count == 0 %}
+    - No projects found
+    {% else %}
+    - Found {{ projects.count }} project{{ projects.count|pluralize }}
+    {% endif %}
+</div>
+{% endif %}
 
 {% if error %}
 <p class="text-danger">{{ error }}</p>
