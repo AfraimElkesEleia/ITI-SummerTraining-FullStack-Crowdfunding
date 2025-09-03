@@ -9,8 +9,11 @@
 <div class="container my-5">
     <div class="card project-card shadow-sm border-0">
         <!-- Project Image -->
+         {% if project.image %}
         <img src="{{ project.image.url }}" class="project-image" alt="AI Project">
-
+        {% else %}
+        <img src="{% static 'images/image.png'%}" class="project-image" alt="AI Project">
+        {% endif %}
         <div class="card-body p-4">
             <!-- Owner Info -->
             <div class="d-flex align-items-center mb-4">
@@ -42,8 +45,7 @@
                 <div class="col-md-6">
                     <p><strong>End Time:</strong> {{project.end_time}}</p>
                     <p><strong>Created At:</strong> {{ project.created_at }}</p>
-                    <p><strong>Average Rating:</strong> ⭐ <span id="avg-rating">{{
-                            project.average_rating|floatformat:1}}</span></p>
+                    <p><strong>Average Rating:</strong> ⭐ <span id="avg-rating">{{project.average_rating|floatformat:1}}</span></p>
                     <p><strong>Total Ratings:</strong> <span id="total-ratings">{{ project.ratings.count }}</span></p>
                 </div>
             </div>

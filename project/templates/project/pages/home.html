@@ -1,5 +1,5 @@
 {% extends "project/base.html" %}
-
+{% load static %}
 {% block content %}
 <div class="container my-5">
 
@@ -7,34 +7,41 @@
   <h3 class="mb-4">Top 5 Rated Projects</h3>
   <div class="row">
     {% if top_rated %}
-      {% for project in top_rated %}
-        <div class="col-md-4 mb-4">
-           <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
-          <div class="card h-100 shadow-sm border-0 rounded-4">
-            {% if project.image %}
-            <img src="{{ project.image.url }}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
-            {% endif %}
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex align-items-center mb-2">
-                {% if project.owner.profile_picture %}
-                  <img src="{{ project.owner.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35" alt="{{ project.owner.first_name }}">
-                {% endif %}
-                <h6 class="mb-0">{{ project.owner.first_name }}</h6>
-              </div>
-              <h5 class="card-title">{{ project.title }}</h5>
-              <p class="card-text">{{ project.description|truncatewords:20 }}</p>
-              <div class="mt-auto">
-                <span class="badge bg-warning text-dark">
-                  ⭐ {{ project.average_rating|floatformat:1 }}
-                </span>
-              </div>
+    {% for project in top_rated %}
+    <div class="col-md-4 mb-4">
+      <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm border-0 rounded-4">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
+          {% else %}
+          <img src="{% static 'images/image.png' %}" class="card-img-top rounded-top-4 project-img"
+            alt="{{ project.title }}">
+          {% endif %}
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex align-items-center mb-2">
+              {% if project.owner.profile_picture %}
+              <img src="{{ project.owner.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35"
+                alt="{{ project.owner.first_name }}">
+              {% else %}
+              <img src="{% static 'images/no_profile.png' %}" class="rounded-circle me-2" width="35" height="35"
+                alt="Project">
+              {% endif %}
+              <h6 class="mb-0">{{ project.owner.first_name }}</h6>
+            </div>
+            <h5 class="card-title">{{ project.title }}</h5>
+            <p class="card-text">{{ project.description|truncatewords:10 }}</p>
+            <div class="mt-auto">
+              <span class="badge bg-warning text-dark">
+                ⭐ {{ project.average_rating|floatformat:1 }}
+              </span>
             </div>
           </div>
-          </a>
         </div>
-      {% endfor %}
+      </a>
+    </div>
+    {% endfor %}
     {% else %}
-      <p class="text-muted">There are no projects now.</p>
+    <p class="text-muted">There are no projects now.</p>
     {% endif %}
   </div>
 
@@ -42,34 +49,41 @@
   <h3 class="mb-4 mt-5">Latest 5 Projects</h3>
   <div class="row">
     {% if latest_projects %}
-      {% for project in latest_projects %}
-        <div class="col-md-4 mb-4">
-           <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
-          <div class="card h-100 shadow-sm border-0 rounded-4">
-            {% if project.image %}
-            <img src="{{ project.image.url }}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
-            {% endif %}
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex align-items-center mb-2">
-                {% if project.owner.profile_picture %}
-                  <img src="{{ project.owner.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35" alt="{{ project.owner.first_name }}">
-                {% endif %}
-                <h6 class="mb-0">{{ project.owner.first_name }}</h6>
-              </div>
-              <h5 class="card-title">{{ project.title }}</h5>
-              <p class="card-text">{{ project.description|truncatewords:20 }}</p>
-              <div class="mt-auto">
-                <span class="badge bg-warning text-dark">
-                  ⭐ {{ project.average_rating|floatformat:1 }}
-                </span>
-              </div>
+    {% for project in latest_projects %}
+    <div class="col-md-4 mb-4">
+      <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm border-0 rounded-4">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
+          {% else %}
+          <img src="{% static 'images/image.png' %}" class="card-img-top rounded-top-4 project-img"
+            alt="{{ project.title }}">
+          {% endif %}
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex align-items-center mb-2">
+              {% if project.owner.profile_picture %}
+              <img src="{{ project.owner.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35"
+                alt="{{ project.owner.first_name }}">
+              {% else %}
+              <img src="{% static 'images/no_profile.png' %}" class="rounded-circle me-2" width="35" height="35"
+                alt="Project">
+              {% endif %}
+              <h6 class="mb-0">{{ project.owner.first_name }}</h6>
+            </div>
+            <h5 class="card-title">{{ project.title }}</h5>
+            <p class="card-text">{{ project.description|truncatewords:10 }}</p>
+            <div class="mt-auto">
+              <span class="badge bg-warning text-dark">
+                ⭐ {{ project.average_rating|floatformat:1 }}
+              </span>
             </div>
           </div>
-          </a>
         </div>
-      {% endfor %}
+      </a>
+    </div>
+    {% endfor %}
     {% else %}
-      <p class="text-muted">There are no projects now.</p>
+    <p class="text-muted">There are no projects now.</p>
     {% endif %}
   </div>
 
@@ -77,44 +91,49 @@
   <h3 class="mb-4 mt-5">All Projects</h3>
   <div class="row">
     {% if all_projects %}
-      {% for project in all_projects %}
-        <div class="col-md-4 mb-4">
-           <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
-          <div class="card h-100 shadow-sm border-0 rounded-4">
-            {% if project.image %}
-            <img src="{{ project.image.url }}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
-            {% endif %}
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex align-items-center mb-2">
-                {% if project.owner.profile_picture %}
-                  <img src="{{ project.owner.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35" alt="{{ project.owner.first_name }}">
-                {% endif %}
-                <h6 class="mb-0">{{ project.owner.first_name }}</h6>
-              </div>
-              <h5 class="card-title">{{ project.title }}</h5>
-              <p class="card-text">{{ project.description|truncatewords:20 }}</p>
-              <div class="mt-auto">
-                <span class="badge bg-warning text-dark">
-                  ⭐ {{ project.average_rating|floatformat:1 }}
-                </span>
-              </div>
+    {% for project in all_projects %}
+    <div class="col-md-4 mb-4">
+      <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm border-0 rounded-4">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
+          {% else %}
+          <img src="{% static 'images/image.png' %}" class="card-img-top rounded-top-4 project-img"
+            alt="{{ project.title }}">
+          {% endif %}
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex align-items-center mb-2">
+              {% if project.owner.profile_picture %}
+              <img src="{{ project.owner.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35"
+                alt="{{ project.owner.first_name }}">
+              {% else %}
+              <img src="{% static 'images/no_profile.png' %}" class="rounded-circle me-2" width="35" height="35"
+                alt="Project">
+              {% endif %}
+              <h6 class="mb-0">{{ project.owner.first_name }}</h6>
+            </div>
+            <h5 class="card-title">{{ project.title }}</h5>
+            <p class="card-text">{{ project.description|truncatewords:10 }}</p>
+            <div class="mt-auto">
+              <span class="badge bg-warning text-dark">
+                ⭐ {{ project.average_rating|floatformat:1 }}
+              </span>
             </div>
           </div>
-          </a>
         </div>
-      {% endfor %}
+      </a>
+    </div>
+    {% endfor %}
     {% else %}
-      <p class="text-muted">There are no projects now.</p>
+    <p class="text-muted">There are no projects now.</p>
     {% endif %}
   </div>
 
 </div>
-
-<!-- Add custom styles -->
 <style>
-.project-img {
-    height: 200px; /* fixed height for all project images */
-    object-fit: cover; /* crops image to fit nicely */
-}
+  .project-img {
+    height: 200px;
+    object-fit: cover;
+  }
 </style>
 {% endblock %}

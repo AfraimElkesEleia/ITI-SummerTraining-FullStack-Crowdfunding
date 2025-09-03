@@ -1,0 +1,96 @@
+ body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }        
+        .navbar {
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%) !important;
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #4ecdc4, #00c6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            position: relative;
+            margin: 0 0.2rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:not(.logout-link):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link:not(.logout-link)::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background: linear-gradient(45deg, #4ecdc4, #00c6ff);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:not(.logout-link):hover::after {
+            width: 70%;
+        }
+        
+        .donations-link {
+            color: #4ecdc4 !important;
+            font-weight: 600;
+        }
+        
+        .donations-link:hover {
+            background-color: rgba(78, 205, 196, 0.1) !important;
+        }
+        
+        .profile-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 0.3rem 0.8rem 0.3rem 0.3rem;
+            margin-left: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-container:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .logout-link {
+            color: #ff6b6b !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-link:hover {
+            background-color: rgba(255, 107, 107, 0.1) !important;
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            padding: 25px;
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
