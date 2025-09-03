@@ -1,4 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
     const stars = document.querySelectorAll('.star');
     const selectedRating = document.getElementById('selected-rating');
     const submitButton = document.getElementById('submit-rating');
@@ -53,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.success) {
                     ratingSuccess.style.display = 'block';
                     selectedRating.textContent = data.average_rating;
-                    submitButton.disabled = true;
                     document.getElementById('avg-rating').textContent = data.average_rating;
                     document.getElementById('total-ratings').textContent = data.total_ratings;
                     console.log('Total ratings:', data.total_ratings);
@@ -87,4 +85,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     highlightStars(currentRating);
-});

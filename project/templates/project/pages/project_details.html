@@ -2,6 +2,243 @@
 {% load static %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'css/details_project_style.css' %}">
+<style>
+    .donation-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 25px;
+        margin: 30px auto;
+        max-width: 800px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e3e6f0;
+    }
+    
+    .donation-section h4 {
+        color: #2d3436;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .donation-section h4 i {
+        color: #28a745;
+        margin-right: 10px;
+        font-size: 1.5rem;
+    }
+    
+    #donation-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    #donation-amount {
+        flex: 1;
+        min-width: 200px;
+        padding: 12px 16px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+    
+    #donation-amount:focus {
+        outline: none;
+        border-color: #28a745;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+    }
+    
+    .donation-section .btn-success {
+        background: #28a745;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+    
+    .donation-section .btn-success:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+    }
+    
+    #donation-success {
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    #donation-success i {
+        margin-right: 8px;
+    }
+    
+    .donation-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e3e6f0;
+    }
+    
+    .stat-item {
+        text-align: center;
+        flex: 1;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #28a745;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    /* Project Owner Section Styles */
+    .owner-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 25px;
+        margin: 30px auto;
+        max-width: 800px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e3e6f0;
+    }
+    
+    .owner-section h4 {
+        color: #2d3436;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .owner-section h4 i {
+        color: #6c5ce7;
+        margin-right: 10px;
+        font-size: 1.5rem;
+    }
+    
+    .owner-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+    
+    .owner-stat-item {
+        text-align: center;
+        flex: 1;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        margin: 5px;
+    }
+    
+    .owner-stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #6c5ce7;
+    }
+    
+    .owner-stat-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    .progress-container {
+        margin: 20px 0;
+    }
+    
+    .progress {
+        height: 12px;
+        border-radius: 10px;
+        background: #e9ecef;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+        transition: width 0.5s ease;
+    }
+    
+    .progress-text {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .cancel-section {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e3e6f0;
+        text-align: center;
+    }
+    
+    .cancel-info {
+        margin-bottom: 15px;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .btn-cancel {
+        background: #ff7675;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-cancel:hover {
+        background: #ff5e57;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(255, 118, 117, 0.3);
+    }
+    
+    .cancel-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+</style>
 {% endblock %}
 {% block content %}
 <input type="hidden" id="project-id" value="{{ project.id }}">
@@ -19,7 +256,7 @@
             <div class="d-flex align-items-center mb-4">
                 {% if project.owner.profile_picture %}
                 <img src="{{ project.owner.profile_picture.url}}" class="rounded-circle profile-img me-3"
-                    alt="John Doe">
+                    alt="profile image">
                 {% else %}
                 <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-2" width="35"
                     height="35" style="width: 35px; height: 35px;">
@@ -31,15 +268,13 @@
                     <small class="text-muted">{{ project.owner.email }}</small>
                 </div>
             </div>
-
             <!-- Project Title -->
             <h2 class="card-title mb-3">{{ project.title }}</h2>
-
             <!-- Project Info -->
             <div class="row mb-4">
                 <div class="col-md-6">
                     <p><strong>Category:</strong> {{ project.category }}</p>
-                    <p><strong>Target Amount:</strong> {{ project.total_target }}</p>
+                    <p><strong>Target Amount:</strong> ${{ project.total_target }}</p>
                     <p><strong>Start Time:</strong> {{project.start_time}}</p>
                 </div>
                 <div class="col-md-6">
@@ -60,6 +295,7 @@
             <div id="tags-container" class="tags-container mb-4"></div>
 
             <!-- Rating Section -->
+            {% if user != project.owner and not project.is_canceled %}
             <div class="rating-section">
                 <h4 class="mb-4">Rate this project</h4>
 
@@ -82,10 +318,155 @@
                     <i class="fas fa-check-circle me-2"></i> Thank you for your rating!
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
-{% block script %}
+
+{% if user != project.owner %}
+<!-- Donation Section for Non-Owners -->
+<div class="container">
+    <div class="donation-section">
+        <h4><i class="fas fa-donate"></i> Support this Project</h4>
+        <form id="donation-form" class="d-flex align-items-center gap-2">
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" min="1" step="1" class="form-control" id="donation-amount" placeholder="Enter amount" required>
+            </div>
+            <button type="submit" class="btn btn-success" {% if project.is_canceled %} disabled {% endif %}>
+                <i class="fas fa-heart me-1"></i> Donate
+            </button>
+        </form>
+        
+        <!-- Donation Stats -->
+        <div class="donation-stats">
+            <div class="stat-item">
+                <div class="stat-value">${{ current_total|default:0 }}</div>
+                <div class="stat-label">Raised</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">${{ project.total_target }}</div>
+                <div class="stat-label">Goal</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ donors_count|default:0 }}</div>
+                <div class="stat-label">Supporters</div>
+            </div>
+        </div>
+        
+        <div class="alert alert-success mt-3" id="donation-success" style="display: none;">
+            <i class="fas fa-check-circle me-2"></i> Thank you for your donation!
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Project Owner Section -->
+<div class="container">
+    <div class="owner-section">
+        <h4><i class="fas fa-chart-line"></i> Project Performance</h4>
+        
+        <div class="owner-stats">
+            <div class="owner-stat-item">
+                <div class="owner-stat-value">${{ current_total|default:0 }}</div>
+                <div class="owner-stat-label">Total Raised</div>
+            </div>
+            <div class="owner-stat-item">
+                <div class="owner-stat-value">${{ project.total_target }}</div>
+                <div class="owner-stat-label">Funding Goal</div>
+            </div>
+            <div class="owner-stat-item">
+                <div class="owner-stat-value">{{ donors_count|default:0 }}</div>
+                <div class="owner-stat-label">Supporters</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress">
+                <div class="progress-bar" style="width: {{ progress_percentage }}%;"></div>
+            </div>
+            <div class="progress-text">
+                <span>{{ progress_percentage }}% Funded</span>
+                <span>${{ current_total|default:0 }} of ${{ project.total_target }}</span>
+            </div>
+        </div>
+        
+        <div class="cancel-section">
+            <div class="cancel-info">
+                <i class="fas fa-info-circle me-1"></i>
+                Project creator can cancel the project if the donations are less than 25% of the target.
+            </div>
+            
+            {% if progress_percentage < 25 %}
+            <button class="btn-cancel">
+                <i class="fas fa-times-circle me-1"></i> Cancel Project
+            </button>
+            {% else %}
+            <button class="btn-cancel" disabled title="Cannot cancel after reaching 25% funding">
+                <i class="fas fa-times-circle me-1"></i> Cancel Project
+            </button>
+            <small class="d-block mt-2 text-muted">Project cannot be canceled after reaching 25% of funding goal.</small>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="cancel-modal" id="cancelModal">
+    <div class="modal-content">
+        <h4>Cancel Project</h4>
+        <p>Are you sure you want to cancel this project? This action cannot be undone.</p>
+        <p>All donations will be refunded to supporters.</p>
+        
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" >Keep Project</button>
+            <button class="btn-cancel">Yes, Cancel Project</button>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if not project.is_canceled %}
+<div class="card mb-2 p-2" id="comment-{{ comment.id }}">
+    <div class="d-flex align-items-center mb-1">
+        {% if comment.user.profile_picture %}
+        <img src="{{ comment.user.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35" alt="Profile">
+        {% else %}
+        <img src="{% static 'images/no_profile.png' %}" class="rounded-circle me-2" width="35" height="35" alt="Profile">
+        {% endif %}
+        
+        <strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong>
+        <small class="text-muted ms-2">{{ comment.created_at|date:"M d, Y H:i" }}</small>
+        
+        {% if comment.is_reported %}
+        <span class="badge bg-warning ms-2">Reported</span>
+        {% endif %}
+        
+        <button class="btn btn-sm btn-outline-danger ms-auto report-btn" data-comment-id="{{ comment.id }}">
+            Report
+        </button>
+        <button class="btn btn-sm btn-outline-primary ms-2 reply-btn" data-comment-id="{{ comment.id }}">
+            Reply
+        </button>
+    </div>
+    
+    <p>{{ comment.text }}</p>
+    
+    <form class="reply-form mt-2" data-comment-id="{{ comment.id }}" style="display:none;">
+        {% csrf_token %}
+        <textarea class="form-control mb-2" placeholder="Write your reply..." required></textarea>
+        <button type="submit" class="btn btn-sm btn-success">Submit Reply</button>
+    </form>
+
+    <div class="replies mt-2">
+        {% for reply in comment.replies.all %}
+        <div class="card p-2 mb-1 ms-4">
+            <strong>{{ reply.user.first_name }} {{ reply.user.last_name }}</strong>
+            <small class="text-muted ms-2">{{ reply.created_at|date:"M d, Y H:i" }}</small>
+            <p>{{ reply.text }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 <script src="{% static 'script/details_project_script.js' %}"></script>
-{% endblock %}
+<script src="{% static 'script/donation.js' %}"></script>
+<script src="{% static 'script/cancel_project.js' %}"></script>
+<script src="{% static 'script/comments.js' %}"></script>
 {% endblock %}

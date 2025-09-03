@@ -10,4 +10,6 @@ urlpatterns = [
     path('project_details/<int:id>/', views.project_details, name="project_detail"),
     path('api/<int:project_id>/<int:user_id>/rate/', views.rate_project, name='rate_project'),
     path('api/<int:project_id>/tags/', views.get_project_tags, name='get_project_tags'),
+    path('api/<int:project_id>/donate/', views.donate_project, name='donate_project'),
+    path('api/<int:project_id>/cancel/',views.cancel_project,name="cancel_project"),
 ]

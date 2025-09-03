@@ -51,6 +51,7 @@ class Project(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
+    is_canceled = models.BooleanField(default=False)
     class Meta:
         ordering = ['-created_at']
     def clean(self):

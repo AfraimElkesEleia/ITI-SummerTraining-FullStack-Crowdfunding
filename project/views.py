@@ -1,22 +1,25 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import logout,authenticate
 from .forms import UserProfileForm, ProfileExtraForm,DeleteAccountForm,ProjectForm
-from .models import Profile,CustomUser,Project,Rating
+from .models import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 import json
 from django.http import JsonResponse
-from django.db.models import Avg
+from django.db.models import Avg,Sum,Count
 from django.views.decorators.csrf import csrf_exempt
+from decimal import Decimal
 # Create your views here.
 def home(request):
-    latest_projects = Project.objects.all().order_by('-created_at')[:5]
+    active_projects = Project.objects.filter(is_canceled=False)
+    latest_projects = active_projects.order_by('-created_at')[:5]
     all_projects = Project.objects.all()
-    top_rated = sorted(all_projects, key=lambda p: p.average_rating(), reverse=True)[:5]
+    top_rated = sorted(active_projects, key=lambda p: p.average_rating(), reverse=True)[:5]
+    
     context = {
         'top_rated': top_rated,
         'latest_projects': latest_projects,
-        'all_projects': all_projects,
+        'all_projects': all_projects,  # all_projects can still include cancelled if you want
     }
     return render(request, 'project/pages/home.html', context)
 
@@ -82,7 +85,7 @@ def create_project(request):
         form = ProjectForm()
 
     return render(request, "project/pages/create_project.html", {"form": form})
-
+@csrf_exempt
 def project_details(request,id):
     current_project = Project.objects.get(id=id)
     user_rating = None
@@ -90,7 +93,42 @@ def project_details(request,id):
         user_rating = Rating.objects.get(project=current_project, user=request.user).value
     except Rating.DoesNotExist:
         user_rating = 0
-    return render(request,"project/pages/project_details.html",{'project':current_project,'user_rating':user_rating})
+    donation_stats = current_project.donations.aggregate(
+        total_raised=Sum('amount'),
+        supporters=Count('user', distinct=True)
+    )
+    total_raised = donation_stats['total_raised'] or 0
+    supporters = donation_stats['supporters'] or 0
+    progress_percentage = 0
+    if current_project.total_target > 0:
+        progress_percentage = round(float(total_raised) / float(current_project.total_target) * 100, 2)
+
+        print(total_raised)
+        print(current_project.total_target)
+        print(progress_percentage)
+    if request.method == 'POST' and not current_project.is_canceled:
+        data = json.loads(request.body)
+        text = data.get('comment_text')
+        if text:
+            comment = Comment.objects.create(user=request.user, project=current_project, text=text)
+            return JsonResponse({
+                'id': comment.id,
+                'user': f"{comment.user.first_name} {comment.user.last_name}",
+                'text': comment.text,
+                'created_at': comment.created_at.strftime("%b %d, %Y %H:%M"),
+                'profile_url': comment.user.profile_picture.url ,
+            })
+    comments = current_project.comments.all().order_by('-created_at')
+    print(progress_percentage)
+    context = {
+        'project': current_project,
+        'comments':comments,
+        'user_rating': user_rating,
+        'current_total': total_raised,
+        'donors_count': supporters,
+        'progress_percentage':progress_percentage,
+    }
+    return render(request,"project/pages/project_details.html",context)
 @csrf_exempt
 def rate_project(request, project_id, user_id):
     if request.method == "POST":
@@ -125,3 +163,49 @@ def get_project_tags(request, project_id):
         return JsonResponse({"tags": tags})
     except Project.DoesNotExist:
         return JsonResponse({"error": "Project not found"}, status=404)
+    
+@csrf_exempt
+@login_required
+def donate_project(request, project_id):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            amount = Decimal(data.get('amount', 0))
+            project = Project.objects.get(id=project_id)
+            if(project.is_canceled):
+               return JsonResponse({'success': False, 'message': 'You cannot donate to this project' })
+            user = request.user
+            current_total = project.donations.aggregate(total= Sum('amount'))['total'] or 0
+            if current_total + amount > project.total_target:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Donation exceeds project target!'
+                })
+
+            Donation.objects.create(project=project, user=user, amount=amount)
+            current_total = project.donations.aggregate(total=Sum('amount'))['total'] or 0
+            donors_count = project.donations.values('user').distinct().count()
+            return JsonResponse({
+                'success': True,
+                'current_total': float(current_total),
+                'donors_count': donors_count
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+@csrf_exempt
+@login_required
+def cancel_project(request, project_id):
+    project = Project.objects.get(id=project_id)
+    if request.user != project.owner:
+        return JsonResponse({'error': "You are not allowed to cancel this project."}, status=400)
+    current_total = Donation.objects.filter(project=project).aggregate(total=Sum('amount'))['total'] or 0
+    progress_percentage = 0
+    if project.total_target > 0:
+        progress_percentage = round((current_total / project.total_target) * 100)
+    if progress_percentage >= 25:
+        return JsonResponse({'error': 'Cannot cancel project after reaching 25% funding.'}, status=400)
+    project.is_canceled = True
+    project.save()
+    print("cancelled done")
+    return JsonResponse({'success': True, 'message': 'Project has been canceled.'})
