@@ -1,0 +1,93 @@
+{% extends "project/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-4 text-dark">My Donations</h2>
+  
+  {% if donations %}
+  <div class="row g-4">
+    {% for donation in donations %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 shadow-sm border-0 rounded-3">
+        <!-- Project Image -->
+        {% if donation.project.image %}
+        <img src="{{ donation.project.image.url }}" class="card-img-top" alt="{{ donation.project.title }}" 
+             style="height: 180px; object-fit: cover;">
+        {% else %}
+        <img src="{% static 'images/image.png' %}" class="card-img-top" alt="{{ donation.project.title }}"
+             style="height: 180px; object-fit: cover;">
+        {% endif %}
+        
+        <div class="card-body d-flex flex-column">
+          <!-- Project Title -->
+          <h5 class="card-title fw-bold text-dark mb-2">{{ donation.project.title }}</h5>
+          
+          <!-- Author -->
+          <div class="d-flex align-items-center mb-2">
+            {% if donation.project.owner.profile_picture and donation.project.owner.profile_picture.url %}
+            <img src="{{ donation.project.owner.profile_picture.url }}" class="rounded-circle me-2" 
+                 width="30" height="30" alt="{{ donation.project.owner.first_name }}">
+            {% else %}
+            <img src="{% static 'images/no_profile.png' %}" class="rounded-circle me-2" 
+                 width="30" height="30" alt="Author">
+            {% endif %}
+            <span class="text-muted small">By {{ donation.project.owner.first_name }}</span>
+          </div>
+          
+          <!-- Donation Amount -->
+          <div class="mb-3">
+            <span class="badge bg-success fs-6">
+              <i class="fas fa-donate me-1"></i> ${{ donation.amount }}
+            </span>
+          </div>
+          
+          <!-- Donation Time -->
+          <div class="mt-auto">
+            <small class="text-muted">
+              <i class="fas fa-clock me-1"></i> Donated on {{ donation.created_at|date:"M d, Y" }}
+            </small>
+            <br>
+            <small class="text-muted">
+              at {{ donation.created_at|time:"g:i A" }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  {% else %}
+  <!-- Empty State -->
+  <div class="text-center py-5">
+    <div class="mb-4">
+      <i class="fas fa-donate fa-3x text-muted"></i>
+    </div>
+    <h4 class="text-muted mb-3">No donations yet</h4>
+    <p class="text-muted mb-4">You haven't made any donations to projects yet.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary">
+      <i class="fas fa-search me-1"></i> Browse Projects
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Simple Modern Styling -->
+<style>
+.card {
+  transition: transform 0.2s ease;
+  border: none;
+}
+.card:hover {
+  transform: translateY(-3px);
+}
+.rounded-3 {
+  border-radius: 12px !important;
+}
+.badge {
+  font-weight: 500;
+  padding: 8px 12px;
+}
+</style>
+{% endblock %}

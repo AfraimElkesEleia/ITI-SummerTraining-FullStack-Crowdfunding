@@ -14,5 +14,7 @@ urlpatterns = [
     path('api/<int:project_id>/donate/', views.donate_project, name='donate_project'),
     path('api/<int:project_id>/cancel/',views.cancel_project,name="cancel_project"),
     path('api/<int:comment_id>/add_reply/',views.reply,name="submit_reply"),
-    path('category/<str:category>/', views.category_projects, name='category_projects')
+    path('category/<str:category>/', views.category_projects, name='category_projects'),
+    path('all_projects/',views.all_projects,name='all_projects'),
+    path('my_donations/<int:user_id>/', views.my_donations, name='my_donations'),
 ]

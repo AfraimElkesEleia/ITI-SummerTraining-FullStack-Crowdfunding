@@ -287,3 +287,17 @@ def category_projects(request, category):
         'category': category
     }
     return render(request, 'project/pages/category_projects.html', context)
+
+def all_projects(request):
+    all_projects = Project.objects.all()
+    return render(request,'project/pages/all_projects.html',{'projects':all_projects})
+
+@login_required
+def my_donations(request,user_id):
+    current_user = CustomUser.objects.get(id=user_id)
+    donations = Donation.objects.filter(user=current_user).order_by('-created_at')
+    
+    context = {
+        'donations': donations
+    }
+    return render(request, 'project/pages/my_donations.html', context)

@@ -1,0 +1,54 @@
+{% extends 'project/base.html' %}
+{% load static %}
+{% block content %}
+
+{% if error %}
+<p class="text-danger">{{ error }}</p>
+{% endif %}
+
+<div class="row g-4">
+    {% for project in projects %}
+    <div class="col-md-4">
+        <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+                {% if project.image %}
+                <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}"
+                    style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="{% static 'images/image.png' %}" class="card-img-top" alt="{{ project.title }}"
+                    style="height: 200px; object-fit: cover;">
+                {% endif %}
+
+                {% if project.is_canceled %}
+                <span class="badge bg-danger text-white position-absolute" style="top: 10px; right: 10px;">
+                    Cancelled
+                </span>
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        {% if project.owner.profile_picture and project.owner.profile_picture.url %}
+                        <img src="{{ project.owner.profile_picture.url }}" class="rounded-circle me-2" width="35"
+                            height="35" alt="{{ project.owner.first_name }}">
+                        {% else %}
+                        <img src="{% static 'images/no_profile.png' %}" class="rounded-circle me-2" width="35"
+                            height="35" alt="Project">
+                        {% endif %}
+                        <h6 class="mb-0">{{ project.owner.first_name }}</h6>
+                    </div>
+
+                    <h5 class="card-title fw-bold text-dark">{{ project.title }}</h5>
+                    <p class="card-text text-muted small">{{ project.description|truncatewords:10 }}</p>
+
+                    <div class="mt-auto">
+                        <span class="badge bg-warning text-dark">
+                            ⭐ {{ project.average_rating|floatformat:1 }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -70,11 +70,12 @@
   <div class="row g-4">
     {% for project in profile.user.projects.all %}
       <div class="col-md-6 col-lg-4">
+        <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
         <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
           {% if project.image %}
             <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 180px; object-fit: cover;">
           {% else %}
-            <img src="{% static 'images/default-project.jpg' %}" class="card-img-top" alt="Default" style="height: 180px; object-fit: cover;">
+            <img src="{% static 'images/image.png' %}" class="card-img-top" alt="Default" style="height: 180px; object-fit: cover;">
           {% endif %}
           
           <div class="card-body">
@@ -93,6 +94,7 @@
             </div>
           </div>
         </div>
+        </a>
       </div>
     {% empty %}
       <div class="col-12 text-center py-5">
@@ -106,25 +108,4 @@
   </div>
 
 </div>
-
-<!-- Simple Modern Styling -->
-<style>
-.card {
-    transition: transform 0.2s ease;
-    border: none;
-}
-.card:hover {
-    transform: translateY(-3px);
-}
-.rounded-3 {
-    border-radius: 12px !important;
-}
-.btn {
-    font-weight: 500;
-}
-.badge {
-    font-weight: 500;
-    padding: 6px 12px;
-}
-</style>
 {% endblock %}
