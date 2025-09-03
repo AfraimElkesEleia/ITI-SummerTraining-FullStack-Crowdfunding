@@ -50,12 +50,12 @@ def home(request):
         'categories': CATEGORY_CHOICES,  
     }
     return render(request, 'project/pages/home.html', context)
-
 def logout_view(request):
     logout(request)  
     return redirect('authentication:login')  
-def show_profile(request):
-    pass
+def show_profile(request,user_id):
+    profile = Profile.objects.get(user_id = user_id)
+    return render(request , 'project/pages/profile.html' , {'profile':profile})
 def edit_profile(request,id):
     user = CustomUser.objects.get(id=id)
     profile = Profile.objects.get(user_id=id)
@@ -67,13 +67,15 @@ def edit_profile(request,id):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            return redirect("home")  
-
+            messages.success(request, "Profile updated successfully ✅")
+        else:
+            messages.error(request, "Please correct the errors below ❌")
+        return redirect('home')
     else:
         user_form = UserProfileForm(instance=user)
         profile_form = ProfileExtraForm(instance=profile)
 
-    return render(request, "project/pages/profile.html", {
+    return render(request, "project/pages/edit_profile.html", {
         "user_form": user_form,
         "profile_form": profile_form
     })
@@ -158,11 +160,9 @@ def project_details(request,id):
     similar_projects = []
     for p in all_projects:
         other_tags = get_tags_list(p.tags or "")
-        common = set(project_tags) & set(other_tags)   # intersection of tags
+        common = set(project_tags) & set(other_tags)  
         if common:
             similar_projects.append((p, len(common)))
-
-    # Sort by number of common tags (descending) and limit to 4
     similar_projects = [p for p, _ in sorted(similar_projects, key=lambda x: x[1], reverse=True)[:4]]
     context = {
         'project': current_project,

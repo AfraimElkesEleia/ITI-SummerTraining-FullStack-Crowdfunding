@@ -1,73 +1,130 @@
+{% extends "project/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <title>Edit Profile</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+{% block content %}
+<div class="container py-5">
 
-<body class="bg-light">
+  <!-- Profile Card - Modern Design -->
+  <div class="card shadow-sm border-0 rounded-3 mb-5 overflow-hidden">
+    <div class="card-body p-5">
+      
+      <!-- User Info with Centered Layout -->
+      <div class="text-center mb-4">
+        <!-- Profile Image -->
+        <div class="mb-3">
+          {% if profile.user.profile_picture %}
+            <img src="{{ profile.user.profile_picture.url }}" alt="Profile Picture"
+                 class="rounded-circle shadow" style="width:120px; height:120px; object-fit:cover;">
+          {% else %}
+            <img src="{% static 'images/no_profile.png' %}" alt="Default Profile"
+                 class="rounded-circle shadow" style="width:120px; height:120px; object-fit:cover;">
+          {% endif %}
+        </div>
 
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-
-        <div class="card shadow-sm border-0 rounded-3">
-          <div class="card-header bg-primary text-white text-center">
-            <h4 class="mb-0">Edit Profile</h4>
-          </div>
-          <div class="card-body p-4">
-            <form method="post" action="{% url 'profile' id=user.id %}" enctype="multipart/form-data">
-              {% csrf_token %}
-
-              <!-- User Info -->
-              <h5 class="mb-3">User Info</h5>
-              <div class="row mb-3">
-                <div class="col-md-6">{{ user_form.first_name.label_tag }} {{ user_form.first_name }}</div>
-                <div class="col-md-6">{{ user_form.last_name.label_tag }} {{ user_form.last_name }}</div>
-              </div>
-
-              <div class="mb-3">{{ user_form.email.label_tag }} {{ user_form.email }}</div>
-              <div class="mb-3">{{ user_form.mobile.label_tag }} {{ user_form.mobile }}</div>
-
-              <!-- Profile Image -->
-              <div class="mb-3">
-                <label class="form-label">Profile Picture</label><br>
-                {% if user.profile_picture %}
-                <img src="{{ user.profile_picture.url }}" alt="Profile Image" class="rounded-circle mb-2" width="100"
-                  height="100">
-                {% else %}
-                <img src="{% static 'images/image.png' %}" alt="Default Profile" class="rounded-circle mb-2" width="100"
-                  height="100">
-                {% endif %}
-                {{ user_form.profile_picture }}
-              </div>
-
-              <!-- Profile Extra Info -->
-              <h5 class="mt-4 mb-3">Additional Info</h5>
-              <div class="mb-3">{{ profile_form.birthdate.label_tag }} {{ profile_form.birthdate }}</div>
-              <div class="mb-3">{{ profile_form.facebook_profile.label_tag }} {{ profile_form.facebook_profile }}</div>
-              <div class="mb-3">{{ profile_form.linkedin.label_tag }} {{ profile_form.linkedin }}</div>
-              <div class="mb-3">{{ profile_form.country.label_tag }} {{ profile_form.country }}</div>
-
-              <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
-              </div>
-            </form>
-            <form method="post" action="{% url 'delete' id=user.id %}" class="d-grid mt-4">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-danger"
-                onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')">
-                Delete My Account
-              </button>
-            </form>
+        <!-- User Names + Info -->
+        <div>
+          <h2 class="fw-bold mb-2 text-dark">
+            {{ profile.user.first_name|default:"" }} {{ profile.user.last_name|default:"" }}
+          </h2>
+          <p class="text-muted mb-3">{{ profile.user.email }}</p>
+          <div class="d-flex justify-content-center gap-2 mb-3">
+            <span class="badge bg-light text-dark border">{{ profile.country|default:"Not set" }}</span>
+            <span class="badge bg-light text-dark border">{{ profile.birthdate|date:"M d, Y"|default:"Not set" }}</span>
           </div>
         </div>
       </div>
+
+      <!-- Social Links -->
+      <div class="text-center mb-4">
+        {% if profile.facebook_profile %}
+          <a href="{{ profile.facebook_profile }}" target="_blank" class="btn btn-sm btn-outline-primary me-2 rounded-pill px-3">
+            <i class="fab fa-facebook me-1"></i> Facebook
+          </a>
+        {% endif %}
+        {% if profile.linkedin %}
+          <a href="{{ profile.linkedin }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+            <i class="fab fa-linkedin me-1"></i> LinkedIn
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex justify-content-center gap-3">
+        <a href="{% url 'edit_profile' profile.user.id %}" class="btn btn-primary rounded-pill px-4">
+          <i class="fas fa-edit me-1"></i> Edit Profile
+        </a>
+        <form method="post" action="{% url 'delete' profile.user.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-danger rounded-pill px-4" 
+                  onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+            <i class="fas fa-trash-alt me-1"></i> Delete
+          </button>
+        </form>
+      </div>
+
     </div>
   </div>
-</body>
 
-</html>
+  <!-- Projects Section -->
+  <h3 class="fw-bold mb-4 text-dark">My Projects</h3>
+  <div class="row g-4">
+    {% for project in profile.user.projects.all %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+          {% if project.image %}
+            <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 180px; object-fit: cover;">
+          {% else %}
+            <img src="{% static 'images/default-project.jpg' %}" class="card-img-top" alt="Default" style="height: 180px; object-fit: cover;">
+          {% endif %}
+          
+          <div class="card-body">
+            <h5 class="card-title fw-bold text-dark mb-2">{{ project.title }}</h5>
+            <p class="card-text text-muted small mb-3">{{ project.description|truncatewords:15 }}</p>
+            
+            <div class="mb-3">
+              <span class="badge bg-light text-dark border small">{{ project.category }}</span>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small">${{ project.total_target }}</span>
+              <span class="badge bg-warning text-dark">
+                ⭐ {{ project.average_rating|floatformat:1 }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center py-5">
+        <i class="fas fa-folder-open fa-2x text-muted mb-3"></i>
+        <p class="text-muted">No projects created yet.</p>
+        <a href="{% url 'create_project' %}" class="btn btn-primary rounded-pill">
+          <i class="fas fa-plus me-1"></i> Create Your First Project
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<!-- Simple Modern Styling -->
+<style>
+.card {
+    transition: transform 0.2s ease;
+    border: none;
+}
+.card:hover {
+    transform: translateY(-3px);
+}
+.rounded-3 {
+    border-radius: 12px !important;
+}
+.btn {
+    font-weight: 500;
+}
+.badge {
+    font-weight: 500;
+    padding: 6px 12px;
+}
+</style>
+{% endblock %}

@@ -1,30 +1,31 @@
 {% extends "project/base.html" %}
 {% load static %}
 {% block content %}
-<div class="container my-5">
+<div class="container py-5">
 
   <!-- Top 5 Rated Projects -->
-  <h3 class="mb-4">Top 5 Rated Projects</h3>
-  <div class="row">
+  <h3 class="fw-bold mb-4 text-dark">Top Rated Projects</h3>
+  <div class="row g-4">
     {% if top_rated %}
     {% for project in top_rated %}
-    <div class="col-md-4 mb-4">
+    <div class="col-md-4">
       <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
-        <div class="card h-100 shadow-sm border-0 rounded-4">
+        <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
           {% if project.image %}
-          <img src="{{ project.image.url }}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
+          <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 200px; object-fit: cover;">
           {% else %}
-          <img src="{% static 'images/image.png' %}" class="card-img-top rounded-top-4 project-img"
-            alt="{{ project.title }}">
+          <img src="{% static 'images/image.png' %}" class="card-img-top" alt="{{ project.title }}" style="height: 200px; object-fit: cover;">
           {% endif %}
+          
           {% if project.is_canceled %}
-          <span class="badge bg-danger text-white position-absolute" style="top: 10px; right: 10px; z-index: 10;">
+          <span class="badge bg-danger text-white position-absolute" style="top: 10px; right: 10px;">
             Cancelled
           </span>
           {% endif %}
+          
           <div class="card-body d-flex flex-column">
             <div class="d-flex align-items-center mb-2">
-              {% if project.owner.profile_picture %}
+              {% if project.owner.profile_picture and project.owner.profile_picture.url %}
               <img src="{{ project.owner.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35"
                 alt="{{ project.owner.first_name }}">
               {% else %}
@@ -33,8 +34,10 @@
               {% endif %}
               <h6 class="mb-0">{{ project.owner.first_name }}</h6>
             </div>
-            <h5 class="card-title">{{ project.title }}</h5>
-            <p class="card-text">{{ project.description|truncatewords:10 }}</p>
+            
+            <h5 class="card-title fw-bold text-dark">{{ project.title }}</h5>
+            <p class="card-text text-muted small">{{ project.description|truncatewords:10 }}</p>
+            
             <div class="mt-auto">
               <span class="badge bg-warning text-dark">
                 ⭐ {{ project.average_rating|floatformat:1 }}
@@ -46,32 +49,36 @@
     </div>
     {% endfor %}
     {% else %}
-    <p class="text-muted">There are no projects now.</p>
+    <div class="col-12 text-center py-4">
+      <i class="fas fa-star fa-2x text-muted mb-3"></i>
+      <p class="text-muted">No top rated projects yet.</p>
+    </div>
     {% endif %}
   </div>
 
   <!-- Latest 5 Projects -->
-  <h3 class="mb-4 mt-5">Latest 5 Projects</h3>
-  <div class="row">
+  <h3 class="fw-bold mb-4 mt-5 text-dark">Latest Projects</h3>
+  <div class="row g-4">
     {% if latest_projects %}
     {% for project in latest_projects %}
-    <div class="col-md-4 mb-4">
+    <div class="col-md-4">
       <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
-        <div class="card h-100 shadow-sm border-0 rounded-4">
+        <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
           {% if project.image %}
-          <img src="{{ project.image.url }}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
+          <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 200px; object-fit: cover;">
           {% else %}
-          <img src="{% static 'images/image.png' %}" class="card-img-top rounded-top-4 project-img"
-            alt="{{ project.title }}">
+          <img src="{% static 'images/image.png' %}" class="card-img-top" alt="{{ project.title }}" style="height: 200px; object-fit: cover;">
           {% endif %}
+          
           {% if project.is_canceled %}
-          <span class="badge bg-danger text-white position-absolute" style="top: 10px; right: 10px; z-index: 100;">
+          <span class="badge bg-danger text-white position-absolute" style="top: 10px; right: 10px;">
             Cancelled
           </span>
           {% endif %}
+          
           <div class="card-body d-flex flex-column">
             <div class="d-flex align-items-center mb-2">
-              {% if project.owner.profile_picture %}
+              {% if project.owner.profile_picture and project.owner.profile_picture.url %}
               <img src="{{ project.owner.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35"
                 alt="{{ project.owner.first_name }}">
               {% else %}
@@ -80,8 +87,10 @@
               {% endif %}
               <h6 class="mb-0">{{ project.owner.first_name }}</h6>
             </div>
-            <h5 class="card-title">{{ project.title }}</h5>
-            <p class="card-text">{{ project.description|truncatewords:10 }}</p>
+            
+            <h5 class="card-title fw-bold text-dark">{{ project.title }}</h5>
+            <p class="card-text text-muted small">{{ project.description|truncatewords:10 }}</p>
+            
             <div class="mt-auto">
               <span class="badge bg-warning text-dark">
                 ⭐ {{ project.average_rating|floatformat:1 }}
@@ -93,55 +102,71 @@
     </div>
     {% endfor %}
     {% else %}
-    <p class="text-muted">There are no projects now.</p>
+    <div class="col-12 text-center py-4">
+      <i class="fas fa-clock fa-2x text-muted mb-3"></i>
+      <p class="text-muted">No recent projects yet.</p>
+    </div>
     {% endif %}
   </div>
 
-  
-<!-- All Categories -->
-<h3 class="mb-4 mt-5">All Categories</h3>
-<div class="row">
-  {% for category in categories %}
-  <div class="col-md-4 mb-4">
-    <a href="{% url 'category_projects' category %}" class="text-decoration-none text-dark">
-      <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-4">
-        <!-- Category Icon -->
-        {% if category == 'Technology & Innovation' %}
-        <i class="fas fa-laptop-code fa-2x mb-3 text-primary"></i>
-        {% elif category == 'Creative Arts' %}
-        <i class="fas fa-paint-brush fa-2x mb-3 text-danger"></i>
-        {% elif category == 'Food & Hospitality' %}
-        <i class="fas fa-utensils fa-2x mb-3 text-warning"></i>
-        {% elif category == 'Social Causes & Charity' %}
-        <i class="fas fa-hands-helping fa-2x mb-3 text-success"></i>
-        {% elif category == 'Education & Learning' %}
-        <i class="fas fa-graduation-cap fa-2x mb-3 text-info"></i>
-        {% elif category == 'Business & Entrepreneurship' %}
-        <i class="fas fa-chart-line fa-2x mb-3 text-primary"></i>
-        {% elif category == 'Travel & Adventure' %}
-        <i class="fas fa-plane fa-2x mb-3 text-info"></i>
-        {% elif category == 'Fashion & Design' %}
-        <i class="fas fa-tshirt fa-2x mb-3 text-pink"></i>
-        {% elif category == 'Sports & Athletics' %}
-        <i class="fas fa-running fa-2x mb-3 text-warning"></i>
-        {% elif category == 'Health & Wellness' %}
-        <i class="fas fa-heartbeat fa-2x mb-3 text-danger"></i>
-        {% else %}
-        <i class="fas fa-folder fa-2x mb-3 text-secondary"></i>
-        {% endif %}
-        
-        <h5 class="card-title">{{ category }}</h5>
-        <p class="card-text text-muted">Click to see projects under {{ category }}</p>
-      </div>
-    </a>
+  <!-- All Categories -->
+  <h3 class="fw-bold mb-4 mt-5 text-dark">Browse Categories</h3>
+  <div class="row g-4">
+    {% for category in categories %}
+    <div class="col-md-4">
+      <a href="{% url 'category_projects' category %}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm border-0 rounded-3 text-center p-4">
+          <!-- Category Icon -->
+          {% if category == 'Technology & Innovation' %}
+          <i class="fas fa-laptop-code fa-2x mb-3 text-primary"></i>
+          {% elif category == 'Creative Arts' %}
+          <i class="fas fa-paint-brush fa-2x mb-3 text-danger"></i>
+          {% elif category == 'Food & Hospitality' %}
+          <i class="fas fa-utensils fa-2x mb-3 text-warning"></i>
+          {% elif category == 'Social Causes & Charity' %}
+          <i class="fas fa-hands-helping fa-2x mb-3 text-success"></i>
+          {% elif category == 'Education & Learning' %}
+          <i class="fas fa-graduation-cap fa-2x mb-3 text-info"></i>
+          {% elif category == 'Business & Entrepreneurship' %}
+          <i class="fas fa-chart-line fa-2x mb-3 text-primary"></i>
+          {% elif category == 'Travel & Adventure' %}
+          <i class="fas fa-plane fa-2x mb-3 text-info"></i>
+          {% elif category == 'Fashion & Design' %}
+          <i class="fas fa-tshirt fa-2x mb-3" style="color: #e83e8c;"></i>
+          {% elif category == 'Sports & Athletics' %}
+          <i class="fas fa-running fa-2x mb-3 text-warning"></i>
+          {% elif category == 'Health & Wellness' %}
+          <i class="fas fa-heartbeat fa-2x mb-3 text-danger"></i>
+          {% else %}
+          <i class="fas fa-folder fa-2x mb-3 text-secondary"></i>
+          {% endif %}
+          
+          <h5 class="card-title fw-bold text-dark">{{ category }}</h5>
+          <p class="card-text text-muted small">Explore {{ category }} projects</p>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-</div>
+
 </div>
 <style>
-  .project-img {
-    height: 200px;
-    object-fit: cover;
-  }
+.card {
+    transition: transform 0.2s ease;
+    border: none;
+}
+.card:hover {
+    transform: translateY(-3px);
+}
+.rounded-3 {
+    border-radius: 12px !important;
+}
+.badge {
+    font-weight: 500;
+    padding: 6px 10px;
+}
+.text-pink {
+    color: #e83e8c;
+}
 </style>
 {% endblock %}
