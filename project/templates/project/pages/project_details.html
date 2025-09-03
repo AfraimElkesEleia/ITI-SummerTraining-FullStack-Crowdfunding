@@ -1,0 +1,89 @@
+{% extends 'project/base.html' %}
+{% load static %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/details_project_style.css' %}">
+{% endblock %}
+{% block content %}
+<input type="hidden" id="project-id" value="{{ project.id }}">
+<input type="hidden" id="user-id" value="{{ user.id }}">
+<div class="container my-5">
+    <div class="card project-card shadow-sm border-0">
+        <!-- Project Image -->
+        <img src="{{ project.image.url }}" class="project-image" alt="AI Project">
+
+        <div class="card-body p-4">
+            <!-- Owner Info -->
+            <div class="d-flex align-items-center mb-4">
+                {% if project.owner.profile_picture %}
+                <img src="{{ project.owner.profile_picture.url}}" class="rounded-circle profile-img me-3"
+                    alt="John Doe">
+                {% else %}
+                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-2" width="35"
+                    height="35" style="width: 35px; height: 35px;">
+                    <i class="fas fa-user text-dark"></i>
+                </div>
+                {% endif %}
+                <div>
+                    <h5 class="mb-0">{{ project.owner.first_name }} {{ project.owner.last_name }}</h5>
+                    <small class="text-muted">{{ project.owner.email }}</small>
+                </div>
+            </div>
+
+            <!-- Project Title -->
+            <h2 class="card-title mb-3">{{ project.title }}</h2>
+
+            <!-- Project Info -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p><strong>Category:</strong> {{ project.category }}</p>
+                    <p><strong>Target Amount:</strong> {{ project.total_target }}</p>
+                    <p><strong>Start Time:</strong> {{project.start_time}}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>End Time:</strong> {{project.end_time}}</p>
+                    <p><strong>Created At:</strong> {{ project.created_at }}</p>
+                    <p><strong>Average Rating:</strong> ⭐ <span id="avg-rating">{{
+                            project.average_rating|floatformat:1}}</span></p>
+                    <p><strong>Total Ratings:</strong> <span id="total-ratings">{{ project.ratings.count }}</span></p>
+                </div>
+            </div>
+
+            <!-- Project Description -->
+            <div class="mb-4">
+                <h5>Description</h5>
+                <p class="text-muted">{{ project.description }}</p>
+            </div>
+
+            <!-- Tags -->
+            <div id="tags-container" class="tags-container mb-4"></div>
+
+            <!-- Rating Section -->
+            <div class="rating-section">
+                <h4 class="mb-4">Rate this project</h4>
+
+                <!-- Rating Stars -->
+                <div class="rating-stars mb-3" id="rating-stars" data-user-rating="{{ user_rating }}">
+                    <span class="star" data-value="1"><i class="far fa-star"></i></span>
+                    <span class="star" data-value="2"><i class="far fa-star"></i></span>
+                    <span class="star" data-value="3"><i class="far fa-star"></i></span>
+                    <span class="star" data-value="4"><i class="far fa-star"></i></span>
+                    <span class="star" data-value="5"><i class="far fa-star"></i></span>
+                </div>
+
+                <p class="rating-result">Your rating: <span id="selected-rating">0</span>/5</p>
+
+                <!-- Rating Button -->
+                <button class="btn btn-rate mt-2" id="submit-rating">Submit Rating</button>
+
+                <!-- Success Message -->
+                <div class="alert-rating" id="rating-success">
+                    <i class="fas fa-check-circle me-2"></i> Thank you for your rating!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% block script %}
+<script src="{% static 'script/details_project_script.js' %}"></script>
+{% endblock %}
+{% endblock %}

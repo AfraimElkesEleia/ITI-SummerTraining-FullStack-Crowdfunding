@@ -1,9 +1,13 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import logout,authenticate
 from .forms import UserProfileForm, ProfileExtraForm,DeleteAccountForm,ProjectForm
-from .models import Profile,CustomUser,Project
+from .models import Profile,CustomUser,Project,Rating
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+import json
+from django.http import JsonResponse
+from django.db.models import Avg
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 def home(request):
     latest_projects = Project.objects.all().order_by('-created_at')[:5]
@@ -78,3 +82,46 @@ def create_project(request):
         form = ProjectForm()
 
     return render(request, "project/pages/create_project.html", {"form": form})
+
+def project_details(request,id):
+    current_project = Project.objects.get(id=id)
+    user_rating = None
+    try:
+        user_rating = Rating.objects.get(project=current_project, user=request.user).value
+    except Rating.DoesNotExist:
+        user_rating = 0
+    return render(request,"project/pages/project_details.html",{'project':current_project,'user_rating':user_rating})
+@csrf_exempt
+def rate_project(request, project_id, user_id):
+    if request.method == "POST":
+        print('inside rate view')
+        data = json.loads(request.body)  
+        rating_value = int(data.get('rating'))
+        print(rating_value)
+        project = Project.objects.get(id=project_id)
+        user = CustomUser.objects.get(id=user_id)
+        existing_rating = Rating.objects.filter(project=project, user=user).first()
+        if existing_rating:
+            existing_rating.value = rating_value
+            existing_rating.save()
+        else:
+            Rating.objects.create(project=project, user=user, value=rating_value)
+        ratings = Rating.objects.filter(project=project)
+        total_ratings = ratings.count()
+        average_rating = ratings.aggregate(avg=Avg('value'))['avg'] or 0
+        return JsonResponse({
+            'success': True,
+            'average_rating': round(average_rating, 1),
+            'total_ratings': total_ratings
+        })
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+    
+def get_project_tags(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+        tags = project.tags.split(",") if project.tags else []
+        tags = [tag.strip() for tag in tags]  # remove spaces
+        return JsonResponse({"tags": tags})
+    except Project.DoesNotExist:
+        return JsonResponse({"error": "Project not found"}, status=404)

@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,60 +6,172 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CrowdFund</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block style %}
+    {% endblock %}
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }        
+        .navbar {
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%) !important;
         }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #4ecdc4, #00c6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            position: relative;
+            margin: 0 0.2rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:not(.logout-link):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link:not(.logout-link)::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background: linear-gradient(45deg, #4ecdc4, #00c6ff);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:not(.logout-link):hover::after {
+            width: 70%;
+        }
+        
+        .donations-link {
+            color: #4ecdc4 !important;
+            font-weight: 600;
+        }
+        
+        .donations-link:hover {
+            background-color: rgba(78, 205, 196, 0.1) !important;
+        }
+        
+        .profile-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 0.3rem 0.8rem 0.3rem 0.3rem;
+            margin-left: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-container:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .logout-link {
+            color: #ff6b6b !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-link:hover {
+            background-color: rgba(255, 107, 107, 0.1) !important;
+            transform: translateY(-2px);
+        }
+        
         footer {
-            background: black;
-            padding: 15px;
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            padding: 25px;
             text-align: center;
             margin-top: 30px;
             color: white;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container" >
-            <a class="navbar-brand fw-bold" href="{% url 'home' %}">CrowdFund</a>
+    <!-- Modern Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">CrowdFund</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'create_project' %}">Create New Project</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">All Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">My Projects</a>
-                    </li>
-                    <li class="nav-item d-flex align-items-center ms-3">
-                        <a href="{% url 'profile' id=user.id %}"
-                            class="d-flex align-items-center text-decoration-none text-dark">
-                            {% if user.profile_picture %}
-                            <img src="{{ user.profile_picture.url }}" alt="Profile" class="rounded-circle me-2"
-                                width="35" height="35">
-                            {% endif %}
-                            <span class="fw-semibold" style="color: white;">{{ user.first_name }} {{ user.last_name }}</span>
+                        <a class="nav-link" href="{% url 'create_project' %}">
+                            <i class="fas fa-plus-circle me-1"></i> Create New Project
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a>
+                        <a class="nav-link" href="">
+                            <i class="fas fa-globe me-1"></i> All Projects
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="">
+                            <i class="fas fa-folder me-1"></i> My Projects
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link donations-link" href="">
+                            <i class="fas fa-donate me-1"></i> My Donations
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'profile' id=user.id %}" class="profile-container text-decoration-none">
+                            <div class="d-flex align-items-center">
+                                {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="Profile" class="rounded-circle me-2"
+                                    width="35" height="35">
+                                {% else %}
+                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-2"
+                                    width="35" height="35" style="width: 35px; height: 35px;">
+                                    <i class="fas fa-user text-dark"></i>
+                                </div>
+                                {% endif %}
+                                <span class="fw-semibold text-white">{{ user.first_name }} {{ user.last_name }}</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="nav-link logout-link" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                        </a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'authentication:login' %}">Login</a>
+                        <a class="nav-link" href="{% url 'authentication:login' %}">
+                            <i class="fas fa-sign-in-alt me-1"></i> Login
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'authentication:register' %}">Register</a>
+                        <a class="nav-link" href="{% url 'authentication:register' %}">
+                            <i class="fas fa-user-plus me-1"></i> Register
+                        </a>
                     </li>
                     {% endif %}
                 </ul>
@@ -85,6 +196,8 @@
         <p>&copy; 2025 CrowdFund. Together, we make dreams real. 🚀</p>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block script %}
+    {% endblock %}
 </body>
 
 </html>
