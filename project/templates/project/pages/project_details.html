@@ -423,14 +423,20 @@
 </div>
 {% endif %}
 {% if not project.is_canceled %}
-<div class="card mb-2 p-2" id="comment-{{ comment.id }}">
+<div class="container my-4">
+    <h4>Comments</h4>
+    <form id="comment-form" method="POST" class="mb-3">
+        {% csrf_token %}
+        <div class="mb-2">
+            <textarea name="comment_text" id="comment-text" class="form-control" placeholder="Write your comment..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+
+    <div id="comments-list">
+    {% for comment in comments %}
+    <div class="card mb-2 p-2" id="comment-{{ comment.id }}">
     <div class="d-flex align-items-center mb-1">
-        {% if comment.user.profile_picture %}
-        <img src="{{ comment.user.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35" alt="Profile">
-        {% else %}
-        <img src="{% static 'images/no_profile.png' %}" class="rounded-circle me-2" width="35" height="35" alt="Profile">
-        {% endif %}
-        
         <strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong>
         <small class="text-muted ms-2">{{ comment.created_at|date:"M d, Y H:i" }}</small>
         
@@ -448,12 +454,14 @@
     
     <p>{{ comment.text }}</p>
     
+    <!-- Reply form hidden by default -->
     <form class="reply-form mt-2" data-comment-id="{{ comment.id }}" style="display:none;">
         {% csrf_token %}
         <textarea class="form-control mb-2" placeholder="Write your reply..." required></textarea>
         <button type="submit" class="btn btn-sm btn-success">Submit Reply</button>
     </form>
 
+    <!-- Display replies if any -->
     <div class="replies mt-2">
         {% for reply in comment.replies.all %}
         <div class="card p-2 mb-1 ms-4">
@@ -464,9 +472,15 @@
         {% endfor %}
     </div>
 </div>
+    {% empty %}
+    <p id="no-comments">No comments yet. Be the first to comment!</p>
+    {% endfor %}
+</div>
+</div>
 {% endif %}
 <script src="{% static 'script/details_project_script.js' %}"></script>
 <script src="{% static 'script/donation.js' %}"></script>
 <script src="{% static 'script/cancel_project.js' %}"></script>
 <script src="{% static 'script/comments.js' %}"></script>
+<script src="{% static 'script/reply.js' %}"></script>
 {% endblock %}

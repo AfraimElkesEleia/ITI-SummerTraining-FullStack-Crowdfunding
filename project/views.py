@@ -26,7 +26,8 @@ def home(request):
 def logout_view(request):
     logout(request)  
     return redirect('authentication:login')  
-
+def show_profile(request):
+    pass
 def edit_profile(request,id):
     user = CustomUser.objects.get(id=id)
     profile = Profile.objects.get(user_id=id)
@@ -102,21 +103,22 @@ def project_details(request,id):
     progress_percentage = 0
     if current_project.total_target > 0:
         progress_percentage = round(float(total_raised) / float(current_project.total_target) * 100, 2)
-
-        print(total_raised)
-        print(current_project.total_target)
-        print(progress_percentage)
     if request.method == 'POST' and not current_project.is_canceled:
         data = json.loads(request.body)
         text = data.get('comment_text')
         if text:
             comment = Comment.objects.create(user=request.user, project=current_project, text=text)
+            profile_url = None
+            if bool(comment.user.profile_picture):
+                profile_url = comment.user.profile_picture.url
+            else:
+                profile_url = '/static/images/no_profile.png'
+            print(profile_url)
             return JsonResponse({
                 'id': comment.id,
                 'user': f"{comment.user.first_name} {comment.user.last_name}",
                 'text': comment.text,
                 'created_at': comment.created_at.strftime("%b %d, %Y %H:%M"),
-                'profile_url': comment.user.profile_picture.url ,
             })
     comments = current_project.comments.all().order_by('-created_at')
     print(progress_percentage)
@@ -209,3 +211,18 @@ def cancel_project(request, project_id):
     project.save()
     print("cancelled done")
     return JsonResponse({'success': True, 'message': 'Project has been canceled.'})
+
+@csrf_exempt
+def reply(request,comment_id):
+    comment = Comment.objects.get(id=comment_id)
+    data = json.loads(request.body)
+    text = data.get('reply_text')
+    if text:
+        reply = Reply.objects.create(user=request.user, comment=comment, text=text)
+        return JsonResponse({
+            'success': True,
+            'user': f"{reply.user.first_name} {reply.user.last_name}",
+            'text': reply.text,
+            'created_at': reply.created_at.strftime("%b %d, %Y %H:%M"),
+        })
+    return JsonResponse({'success': False})
