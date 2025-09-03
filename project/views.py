@@ -10,16 +10,44 @@ from django.db.models import Avg,Sum,Count
 from django.views.decorators.csrf import csrf_exempt
 from decimal import Decimal
 # Create your views here.
+TAG_CHOICES = [
+    "Tech",
+    "Health",
+    "Education",
+    "Art",
+    "Food",
+    "Business",
+    "Travel",
+    "Fashion",
+    "Sports",
+    "Social",
+    "AI",
+    "Flutter",
+    "Computer Vision",
+]
+
+CATEGORY_CHOICES = [
+    "Technology & Innovation",
+    "Creative Arts",
+    "Food & Hospitality",
+    "Social Causes & Charity",
+    "Education & Learning",
+    "Business & Entrepreneurship",
+    "Travel & Adventure",
+    "Fashion & Design",
+    "Sports & Athletics",
+    "Health & Wellness",
+]
+
 def home(request):
     active_projects = Project.objects.filter(is_canceled=False)
     latest_projects = active_projects.order_by('-created_at')[:5]
-    all_projects = Project.objects.all()
     top_rated = sorted(active_projects, key=lambda p: p.average_rating(), reverse=True)[:5]
     
     context = {
         'top_rated': top_rated,
         'latest_projects': latest_projects,
-        'all_projects': all_projects,  # all_projects can still include cancelled if you want
+        'categories': CATEGORY_CHOICES,  
     }
     return render(request, 'project/pages/home.html', context)
 
@@ -121,7 +149,21 @@ def project_details(request,id):
                 'created_at': comment.created_at.strftime("%b %d, %Y %H:%M"),
             })
     comments = current_project.comments.all().order_by('-created_at')
-    print(progress_percentage)
+    def get_tags_list(tags_string):
+        return [t.strip().lower() for t in tags_string.split(",") if t.strip()]
+
+    project_tags = get_tags_list(current_project.tags or "")
+    all_projects = Project.objects.filter(is_canceled=False).exclude(id=current_project.id)
+
+    similar_projects = []
+    for p in all_projects:
+        other_tags = get_tags_list(p.tags or "")
+        common = set(project_tags) & set(other_tags)   # intersection of tags
+        if common:
+            similar_projects.append((p, len(common)))
+
+    # Sort by number of common tags (descending) and limit to 4
+    similar_projects = [p for p, _ in sorted(similar_projects, key=lambda x: x[1], reverse=True)[:4]]
     context = {
         'project': current_project,
         'comments':comments,
@@ -129,6 +171,7 @@ def project_details(request,id):
         'current_total': total_raised,
         'donors_count': supporters,
         'progress_percentage':progress_percentage,
+        'similar_projects':similar_projects
     }
     return render(request,"project/pages/project_details.html",context)
 @csrf_exempt
@@ -160,8 +203,10 @@ def rate_project(request, project_id, user_id):
 def get_project_tags(request, project_id):
     try:
         project = Project.objects.get(id=project_id)
+        print("Raw tags from DB:", project)
         tags = project.tags.split(",") if project.tags else []
-        tags = [tag.strip() for tag in tags]  # remove spaces
+        print( project.tags)
+        tags = [tag.strip() for tag in tags] 
         return JsonResponse({"tags": tags})
     except Project.DoesNotExist:
         return JsonResponse({"error": "Project not found"}, status=404)
@@ -226,3 +271,19 @@ def reply(request,comment_id):
             'created_at': reply.created_at.strftime("%b %d, %Y %H:%M"),
         })
     return JsonResponse({'success': False})
+
+def category_projects(request, category):
+    category_names = CATEGORY_CHOICES
+    if category not in category_names:
+        return render(request, 'project/pages/category_projects.html', {
+            'error': 'Category not found',
+            'projects': [],
+            'category': category
+        })
+
+    projects = Project.objects.filter(category=category)
+    context = {
+        'projects': projects,
+        'category': category
+    }
+    return render(request, 'project/pages/category_projects.html', context)

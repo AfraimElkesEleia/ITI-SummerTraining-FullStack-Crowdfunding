@@ -292,7 +292,7 @@
             </div>
 
             <!-- Tags -->
-            <div id="tags-container" class="tags-container mb-4"></div>
+            <div id="tags-container" class="tags-container mb-4" data-project-id="{{ project.id }}"></div>
 
             <!-- Rating Section -->
             {% if user != project.owner and not project.is_canceled %}
@@ -422,6 +422,30 @@
     </div>
 </div>
 {% endif %}
+<h3 class="mt-5">Similar Projects</h3>
+<div class="row">
+  {% if similar_projects %}
+    {% for project in similar_projects %}
+      <div class="col-md-3 mb-4">
+        <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
+          <div class="card h-100 shadow-sm border-0 rounded-4">
+            {% if project.image %}
+              <img src="{{ project.image.url }}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
+            {% else %}
+              <img src="{% static 'images/image.png' %}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
+            {% endif %}
+            <div class="card-body">
+              <h6 class="card-title">{{ project.title }}</h6>
+              <p class="card-text">{{ project.description|truncatewords:10 }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-muted">No similar projects found.</p>
+  {% endif %}
+</div>
 {% if not project.is_canceled %}
 <div class="container my-4">
     <h4>Comments</h4>

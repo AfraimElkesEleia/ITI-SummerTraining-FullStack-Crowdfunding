@@ -97,53 +97,46 @@
     {% endif %}
   </div>
 
-  <!-- All Projects -->
-  <h3 class="mb-4 mt-5">All Projects</h3>
-  <div class="row">
-    {% if all_projects %}
-    {% for project in all_projects %}
-    <div class="col-md-4 mb-4">
-      <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
-        <div class="card h-100 shadow-sm border-0 rounded-4">
-          {% if project.image %}
-          <img src="{{ project.image.url }}" class="card-img-top rounded-top-4 project-img" alt="{{ project.title }}">
-          {% else %}
-          <img src="{% static 'images/image.png' %}" class="card-img-top rounded-top-4 project-img"
-            alt="{{ project.title }}">
-          {% endif %}
-          {% if project.is_canceled %}
-          <span class="badge bg-danger text-white position-absolute" style="top: 10px; right: 10px; z-index: 10;">
-            Cancelled
-          </span>
-          {% endif %}
-          <div class="card-body d-flex flex-column">
-            <div class="d-flex align-items-center mb-2">
-              {% if project.owner.profile_picture %}
-              <img src="{{ project.owner.profile_picture.url }}" class="rounded-circle me-2" width="35" height="35"
-                alt="{{ project.owner.first_name }}">
-              {% else %}
-              <img src="{% static 'images/no_profile.png' %}" class="rounded-circle me-2" width="35" height="35"
-                alt="Project">
-              {% endif %}
-              <h6 class="mb-0">{{ project.owner.first_name }}</h6>
-            </div>
-            <h5 class="card-title">{{ project.title }}</h5>
-            <p class="card-text">{{ project.description|truncatewords:10 }}</p>
-            <div class="mt-auto">
-              <span class="badge bg-warning text-dark">
-                ⭐ {{ project.average_rating|floatformat:1 }}
-              </span>
-            </div>
-          </div>
-        </div>
-      </a>
-    </div>
-    {% endfor %}
-    {% else %}
-    <p class="text-muted">There are no projects now.</p>
-    {% endif %}
+  
+<!-- All Categories -->
+<h3 class="mb-4 mt-5">All Categories</h3>
+<div class="row">
+  {% for category in categories %}
+  <div class="col-md-4 mb-4">
+    <a href="{% url 'category_projects' category %}" class="text-decoration-none text-dark">
+      <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-4">
+        <!-- Category Icon -->
+        {% if category == 'Technology & Innovation' %}
+        <i class="fas fa-laptop-code fa-2x mb-3 text-primary"></i>
+        {% elif category == 'Creative Arts' %}
+        <i class="fas fa-paint-brush fa-2x mb-3 text-danger"></i>
+        {% elif category == 'Food & Hospitality' %}
+        <i class="fas fa-utensils fa-2x mb-3 text-warning"></i>
+        {% elif category == 'Social Causes & Charity' %}
+        <i class="fas fa-hands-helping fa-2x mb-3 text-success"></i>
+        {% elif category == 'Education & Learning' %}
+        <i class="fas fa-graduation-cap fa-2x mb-3 text-info"></i>
+        {% elif category == 'Business & Entrepreneurship' %}
+        <i class="fas fa-chart-line fa-2x mb-3 text-primary"></i>
+        {% elif category == 'Travel & Adventure' %}
+        <i class="fas fa-plane fa-2x mb-3 text-info"></i>
+        {% elif category == 'Fashion & Design' %}
+        <i class="fas fa-tshirt fa-2x mb-3 text-pink"></i>
+        {% elif category == 'Sports & Athletics' %}
+        <i class="fas fa-running fa-2x mb-3 text-warning"></i>
+        {% elif category == 'Health & Wellness' %}
+        <i class="fas fa-heartbeat fa-2x mb-3 text-danger"></i>
+        {% else %}
+        <i class="fas fa-folder fa-2x mb-3 text-secondary"></i>
+        {% endif %}
+        
+        <h5 class="card-title">{{ category }}</h5>
+        <p class="card-text text-muted">Click to see projects under {{ category }}</p>
+      </div>
+    </a>
   </div>
-
+  {% endfor %}
+</div>
 </div>
 <style>
   .project-img {
