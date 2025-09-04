@@ -10,8 +10,8 @@ A simple **crowdfunding platform** built with Django and PostgreSQL. Users can c
 
 ### 1. Clone the repository
 ```bash
-git clone <your-repo-url>
-cd <your-project-folder>
+git clone https://github.com/AfraimElkesEleia/ITI-SummerTraining-FullStack-Crowdfunding.git
+cd ITI-SummerTraining-FullStack-Crowdfunding
 ```
 ```bash
 python -m venv venv
@@ -41,3 +41,4 @@ DEFAULT_FROM_EMAIL=youremail@example.com  # Same as your Gmail address
 python manage.py makemigrations
 python manage.py migrate
 ```
+
