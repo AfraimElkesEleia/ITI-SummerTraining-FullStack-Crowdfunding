@@ -312,3 +312,26 @@ def my_donations(request,user_id):
         'donations': donations
     }
     return render(request, 'project/pages/my_donations.html', context)
+@csrf_exempt
+def report_project(request, pk,user_id):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        reason = data.get("reason", "")
+        project = Project.objects.get(id=pk)
+        project.is_reported = True
+        project.save()
+        ProjectReport.objects.create(project=project, user=request.user, reason=reason)
+        return JsonResponse({"success": True,"message": "Project reported successfully"})
+
+
+@csrf_exempt
+def report_comment(request, pk,user_id):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        reason = data.get("reason", "")
+        comment = Comment.objects.get(id=pk)
+        user = CustomUser.objects.get(id=user_id)
+        comment.is_reported = True
+        comment.save()
+        CommentReport.objects.create(comment=comment, user=user, reason=reason)
+        return JsonResponse({"success": True,"message": "Comment reported successfully"})

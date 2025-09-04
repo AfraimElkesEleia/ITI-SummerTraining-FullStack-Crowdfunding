@@ -17,4 +17,6 @@ urlpatterns = [
     path('category/<str:category>/', views.category_projects, name='category_projects'),
     path('all_projects/',views.all_projects,name='all_projects'),
     path('my_donations/<int:user_id>/', views.my_donations, name='my_donations'),
+    path("report/project/<int:pk>/<int:user_id>/", views.report_project, name="report_project"),
+    path("report/comment/<int:pk>/<int:user_id>/", views.report_comment, name="report_comment"),
 ]
