@@ -27,15 +27,11 @@ form.addEventListener('submit', function (e) {
     <div class="d-flex align-items-center mb-1">
         <strong>${data.user}</strong>
         <small class="text-muted ms-2">${data.created_at}</small>
-        <button class="btn btn-sm btn-outline-danger ms-auto report-btn" data-comment-id="${data.id}">
-            Report
-        </button>
-        <button class="btn btn-sm btn-outline-primary ms-2 reply-btn" data-comment-id="${data.id}">
+        <button class="btn btn-sm btn-outline-primary ms-auto reply-btn" data-comment-id="${data.id}">
             Reply
         </button>
     </div>
     <p>${data.text}</p>
-    <!-- Reply form hidden by default -->
     <form class="reply-form mt-2" data-comment-id="${data.id}" style="display:none;">
         <textarea class="form-control mb-2" placeholder="Write your reply..." required></textarea>
         <button type="submit" class="btn btn-sm btn-success">Submit Reply</button>

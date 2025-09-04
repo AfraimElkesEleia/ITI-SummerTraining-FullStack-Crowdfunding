@@ -34,8 +34,8 @@ function initReplyFunctionality() {
                 if(data.success){
                     const repliesDiv = form.nextElementSibling;
                     const replyCard = document.createElement('div');
-                    replyCard.className = 'card p-2 mb-1 ms-4';
-                    replyCard.innerHTML = `<strong>${data.user}</strong> <small class="text-muted ms-2">${data.created_at}</small><p>${data.text}</p>`;
+                    replyCard.className = 'card p-2 mb-2 ms-4 bg-light';
+                    replyCard.innerHTML = `<strong>${data.user}</strong> <small class="text-muted ms-2">${data.created_at}</small><p class="mb-0">${data.text}</p>`;
                     repliesDiv.appendChild(replyCard);
                     form.querySelector('textarea').value = '';
                     form.style.display = 'none';

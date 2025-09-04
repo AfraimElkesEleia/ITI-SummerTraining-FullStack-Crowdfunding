@@ -65,13 +65,18 @@
     </div>
   </div>
 
-  <!-- Projects Section -->
   <h3 class="fw-bold mb-4 text-dark">My Projects</h3>
-  <div class="row g-4">
-    {% for project in profile.user.projects.all %}
-      <div class="col-md-6 col-lg-4">
-        <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
-        <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+<div class="row g-4">
+  {% for project in profile.user.projects.all %}
+    <div class="col-md-6 col-lg-4">
+      <a href="{% url 'project_detail' project.id %}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden position-relative">
+          {% if project.is_canceled %}
+            <span class="position-absolute top-0 start-0 m-2 badge bg-danger">Canceled</span>
+          {% elif project.is_reported %}
+            <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">Reported</span>
+          {% endif %}
+          
           {% if project.image %}
             <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 180px; object-fit: cover;">
           {% else %}
@@ -94,18 +99,17 @@
             </div>
           </div>
         </div>
-        </a>
-      </div>
-    {% empty %}
-      <div class="col-12 text-center py-5">
-        <i class="fas fa-folder-open fa-2x text-muted mb-3"></i>
-        <p class="text-muted">No projects created yet.</p>
-        <a href="{% url 'create_project' %}" class="btn btn-primary rounded-pill">
-          <i class="fas fa-plus me-1"></i> Create Your First Project
-        </a>
-      </div>
-    {% endfor %}
-  </div>
-
+      </a>
+    </div>
+  {% empty %}
+    <div class="col-12 text-center py-5">
+      <i class="fas fa-folder-open fa-2x text-muted mb-3"></i>
+      <p class="text-muted">No projects created yet.</p>
+      <a href="{% url 'create_project' %}" class="btn btn-primary rounded-pill">
+        <i class="fas fa-plus me-1"></i> Create Your First Project
+      </a>
+    </div>
+  {% endfor %}
+</div>
 </div>
 {% endblock %}
