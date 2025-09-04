@@ -1,0 +1,158 @@
+ body {
+     background-color: #f8f9fa;
+     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ }
+
+ .project-card {
+     border-radius: 16px;
+     overflow: hidden;
+     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+     margin-bottom: 30px;
+ }
+
+ .project-image {
+     height: 400px;
+     object-fit: cover;
+     width: 100%;
+ }
+
+ .profile-img {
+     width: 50px;
+     height: 50px;
+     object-fit: cover;
+ }
+
+ .rating-section {
+     background-color: #f8f9fa;
+     border-radius: 12px;
+     padding: 25px;
+     margin: 25px 0;
+ }
+
+ .rating-stars {
+     font-size: 28px;
+     cursor: pointer;
+     color: #e4e5e9;
+     transition: all 0.5s ease;
+ }
+
+ .rating-stars .star {
+     display: inline-block;
+     margin-right: 5px;
+ }
+
+ .rating-result {
+     font-size: 24px;
+     font-weight: 600;
+     color: #333;
+ }
+
+ .rating-count {
+     color: #6c757d;
+     font-size: 14px;
+ }
+
+ .tags-container {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 10px;
+     margin: 20px 0;
+ }
+
+ .tag {
+     background: #6c5ce7;
+     color: white;
+     padding: 8px 16px;
+     border-radius: 50px;
+     font-size: 14px;
+     font-weight: 500;
+ }
+
+ .tag-tech {
+     background: #0984e3;
+     color: white;
+ }
+
+ .tag-health {
+     background: #55efc4;
+     color: #2d3436;
+ }
+
+ .tag-education {
+     background: #ffeaa7;
+     color: #2d3436;
+ }
+
+ .tag-art {
+     background: #fd79a8;
+     color: white;
+ }
+
+ .tag-food {
+     background: #fab1a0;
+     color: #2d3436;
+ }
+
+ .tag-business {
+     background: #636e72;
+     color: white;
+ }
+
+ .tag-travel {
+     background: #00cec9;
+     color: white;
+ }
+
+ .tag-fashion {
+     background: #e84393;
+     color: white;
+ }
+
+ .tag-sports {
+     background: #00b894;
+     color: white;
+ }
+
+ .tag-social {
+     background: #6c5ce7;
+     color: white;
+ }
+
+ .tag-ai {
+     background: #dfe6e9;
+     color: #2d3436;
+ }
+
+ .tag-flutter {
+     background: #74b9ff;
+     color: #2d3436;
+ }
+
+ .tag-computer-vision {
+     background: #fdcb6e;
+     color: #2d3436;
+ }
+
+ .btn-rate {
+     background: #6c5ce7;
+     color: white;
+     border: none;
+     padding: 10px 25px;
+     border-radius: 8px;
+     font-weight: 500;
+     transition: all 0.3s;
+ }
+
+ .btn-rate:hover {
+     background: #5649c9;
+     transform: translateY(-2px);
+ }
+
+ .alert-rating {
+     display: none;
+     background: #d4edda;
+     color: #155724;
+     border-radius: 8px;
+     padding: 12px 20px;
+     margin-top: 20px;
+ }

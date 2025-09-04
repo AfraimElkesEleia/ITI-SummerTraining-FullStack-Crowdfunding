@@ -51,6 +51,7 @@ class Project(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
+    is_canceled = models.BooleanField(default=False)
     class Meta:
         ordering = ['-created_at']
     def clean(self):
@@ -96,4 +97,18 @@ class Donation(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="donations")
     amount = models.DecimalField(max_digits=12, decimal_places=2,validators=[MinValueValidator(1)])  
+    created_at = models.DateTimeField(auto_now_add=True)
+
+from django.conf import settings
+
+class ProjectReport(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="reports")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    reason = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class CommentReport(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="reports")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    reason = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
