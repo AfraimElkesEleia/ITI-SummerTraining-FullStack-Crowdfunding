@@ -70,6 +70,3 @@ class ProjectForm(forms.ModelForm):
             'start_time': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'end_time': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
-        help_texts = {
-            'tags': 'Select multiple tags by holding Ctrl (Windows) or Cmd (Mac).'
-        }   
